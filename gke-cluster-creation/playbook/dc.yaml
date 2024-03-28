@@ -19,8 +19,6 @@
 
     register: gke_cluster_artifactcluster
 
-
-
   - name: debug
-    ansible.buildin.debug:
+    ansible.builtin.debug:
       var: gke_cluster_artifactcluster
