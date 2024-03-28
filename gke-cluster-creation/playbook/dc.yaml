@@ -14,6 +14,7 @@
       location: northamerica-northeast1-a
       project: openenv-z7ckj
       auth_kind: serviceaccount
+      kubectl_context: "gk"
       kubectl_path: "./gk.yaml"
       state: present
 
@@ -21,7 +22,7 @@
 
   - name: debug
     ansible.builtin.debug:
-      var: gke_cluster_artifactcluster
+      msg: "{{ gke_cluster_artifactcluster.kubectlPath }}"
 
 
   # - name: Apply k8s manifests to Hub Cluster
