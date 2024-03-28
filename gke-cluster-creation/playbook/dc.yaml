@@ -35,7 +35,7 @@
 
   # Retrive the kubeconfig
   - name: Retrieve kubeconfig
-    shell: "ls ~/.kube"
+    shell: "ls"
     register: gke_kubeconfig
     # when: cluster_state == "present"
 
