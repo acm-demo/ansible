@@ -14,7 +14,7 @@
       location: northamerica-northeast1-a
       project: openenv-z7ckj
       auth_kind: serviceaccount
-      kubectl_path: "gk.yaml"
+      kubectl_path: "./gk.yaml"
       state: present
 
     register: gke_cluster_artifactcluster
