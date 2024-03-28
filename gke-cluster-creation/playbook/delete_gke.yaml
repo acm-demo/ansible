@@ -9,8 +9,8 @@
   roles:
     - role: kubernetes
       vars:
-        cluster_state: {{ state }}
+        cluster_state: "{{ state }}" 
     - role: acm
       vars:
-        cluster_state: {{ state }}
+        cluster_state: "{{ state }}" 
 
