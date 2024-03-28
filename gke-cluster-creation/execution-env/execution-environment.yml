@@ -21,7 +21,7 @@ dependencies:
   python:
     - six
     - psutil
-    - ~/.ansible/collections/ansible_collections/google/cloud/requirements-azure.txt
+    - ~/.ansible/collections/ansible_collections/google/cloud/requirements.txt
     - kubernetes
 
 images:
