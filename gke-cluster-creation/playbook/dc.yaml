@@ -14,7 +14,7 @@
       location: northamerica-northeast1-a
       project: openenv-z7ckj
       auth_kind: serviceaccount
-      # service_account_file: "/tmp/auth.pem"
+      kubectl_path: "gk.yaml"
       state: present
 
     register: gke_cluster_artifactcluster
@@ -22,3 +22,10 @@
   - name: debug
     ansible.builtin.debug:
       var: gke_cluster_artifactcluster
+
+
+  - name: Apply k8s manifests to Hub Cluster
+    redhat.openshift.k8s:
+      resource_definition: "{{ lookup('ansible.builtin.template', './templates/import-cluster.yaml') }}"
+      state: present
+    register: hub_cluster_artifact
