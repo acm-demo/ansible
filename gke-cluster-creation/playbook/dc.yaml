@@ -7,6 +7,11 @@
   #   - role: google.cloud.gcloud
 
   tasks:  
+
+  - name: Install bottle python package
+    ansible.builtin.pip:
+      name: pyyaml
+
   - name: create a cluster
     google.cloud.gcp_container_cluster:
       name: my-cluster
@@ -23,9 +28,9 @@
 
     register: gke_cluster_artifactcluster
 
-  # - name: debug
-  #   ansible.builtin.debug:
-  #     msg: "{{ gke_cluster_artifactcluster.kubectlPath }}"
+  - name: debug
+    ansible.builtin.debug:
+      var: gke_cluster_artifactcluster
 
 
   # Retrive the kubeconfig
