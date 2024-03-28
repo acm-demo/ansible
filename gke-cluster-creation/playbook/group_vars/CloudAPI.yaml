@@ -1,0 +1,1 @@
+credential: {{ lookup(‘ansible.builtin.env’, ‘GCP_CREDENTIALS_FILE_PATH’) }}
