@@ -1,0 +1,26 @@
+---
+- name: Create cluster
+  hosts: localhost
+  gather_facts: false
+
+  tasks:  
+  - name: create a cluster
+    google.cloud.gcp_container_cluster:
+      name: my-cluster
+      initial_node_count: 1
+      node_config:
+        machine_type: n1-standard-4
+        disk_size_gb: 500
+      location: northamerica-northeast1-a
+      project: openenv-z7ckj
+      auth_kind: machineaccount
+      # service_account_file: "/tmp/auth.pem"
+      state: present
+
+    register: gke_cluster_artifactcluster
+
+
+
+  - name: debug
+    ansible.buildin.debug:
+      var: gke_cluster_artifactcluster
