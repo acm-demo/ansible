@@ -36,6 +36,11 @@ additional_build_files:
 
 additional_build_steps:
 
+  append_base:
+    # - RUN microdnf install yum-utils && yum-config-manager --add-repo https://rpm.releases.hashicorp.com/RHEL/hashicorp.repo && microdnf install terraform
+    # - RUN microdnf install gettext && microdnf install jq
+    - RUN sh -c 'echo -e "[google-cloud-cli]\nname=Google Cloud CLI\nbaseurl=https://packages.cloud.google.com/yum/repos/cloud-sdk-el9-x86_64\nenabled=1\ngpgcheck=1\nrepo_gpgcheck=0\ngpgkey=https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg" > /etc/yum.repos.d/google-cloud-sdk.repo' && microdnf install -y google-cloud-cli && microdnf install -y google-cloud-cli-gke-gcloud-auth-plugin
+
   prepend_base:
     - COPY _build/rpms/*.rpm /tmp/openshift-clients.rpm
     - RUN $PKGMGR install -y bash-completion

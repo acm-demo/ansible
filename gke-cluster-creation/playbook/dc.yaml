@@ -1,0 +1,62 @@
+---
+- name: Create cluster
+  hosts: localhost
+  gather_facts: false
+
+  vars:
+
+    cluster_name: my-cluster
+
+  tasks:  
+
+  - name: create a cluster
+    google.cloud.gcp_container_cluster:
+      
+      name: my-cluster
+      
+      initial_node_count: 1
+      
+      node_config:
+        machine_type: n1-standard-4
+        disk_size_gb: 500
+      
+      location: northamerica-northeast1-a
+      
+      project: openenv-z7ckj
+      
+      auth_kind: serviceaccount
+      
+      binary_authorization: 
+        enabled: false
+
+      kubectl_context: "gk"
+      kubectl_path: "./gk.yaml"
+
+      legacy_abac:
+        enabled: true
+
+      state: present
+
+    register: gke_cluster_artifactcluster
+
+  - name: Build credentials
+    ansible.builtin.shell: |
+      gcloud auth activate-service-account --key-file=${GCE_CREDENTIALS_FILE_PATH} && \
+      gcloud container clusters get-credentials my-cluster --location=northamerica-northeast1-a --project=openenv-z7ckj && \
+      kubectl create sa ggg && \
+      kubectl create clusterrolebinding ggg-cluster-admin --clusterrole=cluster-admin --serviceaccount=default:ggg
+
+  - name: Get token
+    ansible.builtin.shell: kubectl create token ggg
+    register: gke_token
+
+  - name: Get gke server
+    ansible.builtin.shell: kubectl config view -o='jsonpath' --template='{.clusters[0].cluster.server}'
+    register: gke_server
+
+
+  - name: Apply k8s manifests to Hub Cluster
+    redhat.openshift.k8s:
+      resource_definition: "{{ lookup('ansible.builtin.template', './templates/import-cluster.yaml') }}"
+      state: present
+    register: hub_cluster_artifact

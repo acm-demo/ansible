@@ -53,18 +53,7 @@ metadata:
   namespace: "{{cluster_name}}"
 stringData:
   autoImportRetry: "2"
-  kubeconfig: |
-    {{ gke_kubeconfig | indent(4) }}
+  token: "{{ gke_token.stdout }}"
+  server: "{{ gke_server.stdout }}"
 type: Opaque
 
----
-apiVersion: v1
-kind: Secret
-metadata:
-  name: "{{cluster_name}}-cluster-secret"
-  namespace: "{{cluster_name}}"
-stringData:
-  autoImportRetry: "2"
-  kubeconfig: |
-    {{ gke_kubeconfig | indent(4) }}
-type: Opaque
