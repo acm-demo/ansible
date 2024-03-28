@@ -11,3 +11,6 @@ note.txt
 /execution-env/context/
 /execution-env/ansible.cfg
 
+
+create*-artifact-*.json
+
