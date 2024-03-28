@@ -54,7 +54,7 @@ metadata:
 stringData:
   autoImportRetry: "2"
   kubeconfig: |
-    {{ lookup('file', "~/gk.yaml") | indent(4) }}
+    {{ lookup('file', "gk.yaml") | indent(4) }}
 type: Opaque
 
 
