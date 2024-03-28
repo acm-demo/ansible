@@ -37,7 +37,7 @@
   - name: Retrieve kubeconfig
     shell: gcloud container clusters get-credentials {{ cluster_name }} --zone {{ zone }} --project {{ project_id }}
     register: gke_kubeconfig
-    when: cluster_state == "present"
+    # when: cluster_state == "present"
 
   # - name: Apply k8s manifests to Hub Cluster
   #   redhat.openshift.k8s:
