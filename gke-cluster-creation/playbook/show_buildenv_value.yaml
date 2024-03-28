@@ -7,4 +7,4 @@
     
     - name: Prints the CREDENTIAL PATH
       ansible.builtin.debug:
-        var: GCE_EMAIL
+        var: AZURE_CLIENT_ID
