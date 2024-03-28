@@ -33,14 +33,14 @@
       var: gke_cluster_artifactcluster
 
 
-  # Retrive the kubeconfig
-  - name: Retrieve kubeconfig
-    shell: "cat gk.yaml"
-    register: gke_kubeconfig
-    # when: cluster_state == "present"
+  # # Retrive the kubeconfig
+  # - name: Retrieve kubeconfig
+  #   shell: "cat gk.yaml"
+  #   register: gke_kubeconfig
+  #   # when: cluster_state == "present"
 
-  # - name: Apply k8s manifests to Hub Cluster
-  #   redhat.openshift.k8s:
-  #     resource_definition: "{{ lookup('ansible.builtin.template', './templates/import-cluster.yaml') }}"
-  #     state: present
-  #   register: hub_cluster_artifact
+  - name: Apply k8s manifests to Hub Cluster
+    redhat.openshift.k8s:
+      resource_definition: "{{ lookup('ansible.builtin.template', './templates/import-cluster.yaml') }}"
+      state: present
+    register: hub_cluster_artifact
