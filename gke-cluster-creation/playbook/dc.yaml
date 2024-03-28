@@ -39,10 +39,6 @@
 
     register: gke_cluster_artifactcluster
 
-  - name: ClusterName
-    ansible.builtin.debug:
-      var: cluster_name
-
   - name: Build credentials
     ansible.builtin.shell: |
       gcloud auth activate-service-account --key-file=${GCE_CREDENTIALS_FILE_PATH} && \
