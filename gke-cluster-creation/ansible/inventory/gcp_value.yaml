@@ -1,0 +1,20 @@
+---
+all:
+ vars:
+   zone: northamerica-northeast1-a # Zone where to create the environment
+   region: northamerica-northeast1 # Region where to create the environment
+   project_id: openenv-z7ckj #GCP project ID
+   gcloud_sa_path: "projects/repository/github/org/acm-demo/gke-cluster-creation/.env.local/gcpserviceaccount.json" # Enter path to you service account json file
+   kubectl_path: "/usr/local/bin/kubectl"
+   gcloud_service_account: "sa-openenv-z7ckj@rhpds-345620.iam.gserviceaccount.com"
+   credential: "{{lookup('env','HOME') }}/{{gcloud_sa_path}}"
+   
+
+   #Cluster information
+   cluster_name: "gketest" 
+   description: "The usage for the cluster or descrtiption"
+   initial_node_count: 1   
+   initial_cluster_version: "1.27"
+   disk_size_gb: 100
+   disk_type: "pd-ssd" 
+   machine_type: "e2-medium"

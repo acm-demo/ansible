@@ -1,0 +1,12 @@
+---
+- name: Create cluster
+  hosts: localhost
+  gather_facts: false
+  environment:
+    GOOGLE_CREDENTIALS: "{{ credential }}"   # cred for serviceaccount.json
+
+  roles:
+    - role: kubernetes
+      vars:
+        cluster_state: present
+    - role: acm

@@ -1,0 +1,47 @@
+---
+- name: Create a cluster
+  google.cloud.gcp_container_cluster:
+    name: "{{ cluster_name }}"
+    description: "{{ description }}"
+    initial_cluster_version: "{{ initial_cluster_version }}"
+    initial_node_count: "{{ initial_node_count }}"
+    location: "{{ zone }}"
+    project: "{{ project_id }}"
+    auth_kind: serviceaccount
+    service_account_file: "{{ credential }}"
+    state: "{{ cluster_state }}"
+  register: gke_cluster_artifactcluster
+
+- name: Display kubeconfig output
+  debug:
+    var: gke_cluster_artifactcluster
+
+# create node pool
+- name: Create a node pool
+  google.cloud.gcp_container_node_pool:
+    name: my-pool-{{ cluster_name }}
+    initial_node_count: "{{ initial_node_count }}"
+    cluster: "{{ gke_cluster_artifactcluster }}"
+    config:
+      disk_size_gb: "{{ disk_size_gb }}"
+      disk_type: "{{ disk_type }}"
+      machine_type: "{{ machine_type }}"
+    location: "{{ zone }}"
+    project: "{{ project_id }}"
+    auth_kind: serviceaccount
+    service_account_file: "{{ credential }}"
+    state: "{{ cluster_state }}"
+
+# Retrive the kubeconfig
+- name: Retrieve kubeconfig
+  shell: gcloud container clusters get-credentials {{ cluster_name }} --zone {{ zone }} --project {{ project_id }}
+  environment:
+    CLOUDSDK_AUTH_CREDENTIAL_FILE_OVERRIDE: "{{ credential }}"
+  register: gke_kubeconfig
+  when: cluster_state == "present"
+
+- name: Display kubeconfig output
+  debug:
+    var: gke_kubeconfig
+  when: cluster_state == "present"
+
