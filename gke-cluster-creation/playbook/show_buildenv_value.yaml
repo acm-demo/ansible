@@ -7,4 +7,4 @@
     
     - name: Prints the CREDENTIAL PATH
       ansible.builtin.debug:
-        msg: "The credential PATH {{ GCP_CREDENTIALS_FILE_PATH }}"
+        msg: "The credential PATH: {{ GCP_CREDENTIALS_FILE_PATH }} :"
