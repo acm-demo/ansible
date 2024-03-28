@@ -8,7 +8,6 @@
     location: "{{ zone }}"
     project: "{{ project_id }}"
     auth_kind: serviceaccount
-    #service_account_file: "{{ credential }}"
     state: "{{ cluster_state }}"
   register: gke_cluster_artifactcluster
 
@@ -29,14 +28,11 @@
     location: "{{ zone }}"
     project: "{{ project_id }}"
     auth_kind: serviceaccount
-    service_account_file: "{{ credential }}"
     state: "{{ cluster_state }}"
 
 # Retrive the kubeconfig
 - name: Retrieve kubeconfig
   shell: gcloud container clusters get-credentials {{ cluster_name }} --zone {{ zone }} --project {{ project_id }}
-  environment:
-    CLOUDSDK_AUTH_CREDENTIAL_FILE_OVERRIDE: "{{ credential }}"
   register: gke_kubeconfig
   when: cluster_state == "present"
 

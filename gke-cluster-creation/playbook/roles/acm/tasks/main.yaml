@@ -2,7 +2,7 @@
 - name: Apply k8s manifests to Hub Cluster
   redhat.openshift.k8s:
     resource_definition: "{{ lookup('ansible.builtin.template', './templates/import-cluster.yaml') }}"
-    state: present
+    state: "{{ cluster_state }}"
   register: hub_cluster_artifact
 
 - name: debug
