@@ -13,7 +13,7 @@
         disk_size_gb: 500
       location: northamerica-northeast1-a
       project: openenv-z7ckj
-      auth_kind: machineaccount
+      auth_kind: serviceaccount
       # service_account_file: "/tmp/auth.pem"
       state: present
 
