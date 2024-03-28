@@ -35,9 +35,3 @@
   shell: gcloud container clusters get-credentials {{ cluster_name }} --zone {{ zone }} --project {{ project_id }}
   register: gke_kubeconfig
   when: cluster_state == "present"
-
-- name: Display kubeconfig output
-  debug:
-    var: gke_kubeconfig
-  when: cluster_state == "present"
-
