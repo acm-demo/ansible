@@ -30,8 +30,8 @@
     auth_kind: serviceaccount
     state: "{{ cluster_state }}"
 
-# Retrive the kubeconfig
-- name: Retrieve kubeconfig
-  shell: gcloud container clusters get-credentials {{ cluster_name }} --zone {{ zone }} --project {{ project_id }}
-  register: gke_kubeconfig
-  when: cluster_state == "present"
+# # Retrive the kubeconfig
+# - name: Retrieve kubeconfig
+#   shell: gcloud container clusters get-credentials {{ cluster_name }} --zone {{ zone }} --project {{ project_id }}
+#   register: gke_kubeconfig
+#   when: cluster_state == "present"
