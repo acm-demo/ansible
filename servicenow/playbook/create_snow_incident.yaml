@@ -1,0 +1,51 @@
+---
+- name: Open a ServiceNow ticket
+  hosts: localhost
+  connection: local
+  # using this to get the time/date
+  gather_facts: true
+  collections:
+    - servicenow.itsm
+  
+  # Use these var when running locally
+  # vars:
+  #   # servicenow_instance: ""
+  #   # servicenow_username: ""
+  #   # servicenow_password: ""
+  #   tower_user_name: "AAP User"
+  #   short_description: "created a new incident from Ansible Automation Platform"
+  #   description: "A new incident was created into service now on"
+  tasks:
+    - name: Create a ServiceNow ticket
+      servicenow.itsm.incident:
+        # Define the instance if running locally otherwise it is define by the credential.
+        # instance:
+        #   host: "{{ servicenow_instance }}"
+        #   username: "{{ servicenow_username }}"
+        #   password: "{{ servicenow_password }}"
+        state: new
+        caller: "{{ tower_user_name }}"
+        short_description: "[{{ tower_user_name }}] {{short_description}}"
+        description: "{{description}} {{ ansible_date_time.date }}"
+        impact: low
+        urgency: low
+      register: new_incident
+
+    - ansible.builtin.set_stats:
+        data:
+          incident_number_cached: "{{ new_incident.record.number }}"
+
+    - debug:
+        msg: "A new incident has been created: {{ new_incident.record.number }}"
+
+    - name: Change the state of the incident {{ new_incident.record.number }} to in progress
+      servicenow.itsm.incident:
+        instance:
+          host: "{{ servicenow_instance }}"
+          username: "{{ servicenow_username }}"
+          password: "{{ servicenow_password }}"
+        state: in_progress
+        number: "{{ new_incident.record.number }}"
+
+    - debug:
+        msg: "Incident {{ new_incident.record.number }} has been updated to in progress on {{ servicenow_instance }}"
