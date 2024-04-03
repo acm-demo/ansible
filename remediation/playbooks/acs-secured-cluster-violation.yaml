@@ -1,0 +1,10 @@
+---
+- name: ACS Policy Violation
+  hosts: localhost
+ 
+  tasks
+    - name: debug
+      ansible.builtin.debug:
+        var: hostvars[inventory_hostname]
+        verbosity: 4
+
