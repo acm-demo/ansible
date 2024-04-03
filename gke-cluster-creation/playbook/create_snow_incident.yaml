@@ -12,7 +12,7 @@
   #   # servicenow_instance: ""
   #   # servicenow_username: ""
   #   # servicenow_password: ""
-  #   app_user_name: "AAP User"
+  #   tower_user_name: "AAP User"
   #   short_description: "created a new incident from Ansible Automation Platform"
   #   description: "A new incident was created into service now on"
   tasks:
@@ -24,8 +24,8 @@
         #   username: "{{ servicenow_username }}"
         #   password: "{{ servicenow_password }}"
         state: new
-        caller: "{{ servicenow_username }}"
-        short_description: "[{{ app_user_name }}] {{short_description}}"
+        caller: "{{ tower_user_name }}"
+        short_description: "[{{ tower_user_name }}] {{short_description}}"
         description: "{{description}} {{ ansible_date_time.date }}"
         impact: low
         urgency: low
