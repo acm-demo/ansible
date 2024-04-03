@@ -13,8 +13,7 @@
   #   # servicenow_username: ""
   #   # servicenow_password: ""
   #   tower_user_name: "AAP User"
-    short_description: "created a new incident from Ansible Automation Platform"
-    description: "A new incident was created into service now on"
+
   tasks:
     - name: Create a ServiceNow ticket
       servicenow.itsm.incident:
@@ -25,10 +24,9 @@
         #   password: "{{ servicenow_password }}"
         state: new
         caller: "{{ tower_user_name }}"
-        short_description: "[{{ tower_user_name }}] {{short_description}}"
-        description: "{{description}} {{ ansible_date_time.date }}"
-        other:
-          configuration_item: "{{ target_clusters }}"
+#        short_description: "[{{ tower_user_name }}] {{policy_name}}"
+        short_description: "[{{ tower_user_name }}]created a new NonCompliant incident from Ansible Automation Plateform."
+        description: "A NonCompliant incident was created. A policy violation was detected by the system. \n Policy name {{ policy_name }}. \n Cluster: {{ target_cluster }} on {{ hub_cluster }} \n on {{ ansible_date_time.date }}"
         impact: low
         urgency: low
       register: new_incident
