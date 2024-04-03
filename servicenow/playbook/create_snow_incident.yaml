@@ -40,10 +40,11 @@
 
     - name: Change the state of the incident {{ new_incident.record.number }} to in progress
       servicenow.itsm.incident:
-        instance:
-          host: "{{ servicenow_instance }}"
-          username: "{{ servicenow_username }}"
-          password: "{{ servicenow_password }}"
+        # Define the instance if running locally otherwise it is define by the credential.
+        # instance:
+        #   host: "{{ servicenow_instance }}"
+        #   username: "{{ servicenow_username }}"
+        #   password: "{{ servicenow_password }}"
         state: in_progress
         number: "{{ new_incident.record.number }}"
 
