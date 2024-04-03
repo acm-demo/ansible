@@ -2,6 +2,9 @@
 - name: Create cluster
   hosts: localhost
   gather_facts: false
+  collections:
+  - servicenow.itsm
+
 
   vars:
     state: present
