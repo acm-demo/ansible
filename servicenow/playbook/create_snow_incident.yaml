@@ -27,7 +27,8 @@
         caller: "{{ tower_user_name }}"
         short_description: "[{{ tower_user_name }}] {{short_description}}"
         description: "{{description}} {{ ansible_date_time.date }}"
-        configuration_item: "{{ target_clusters }}"
+        other:
+          configuration_item: "{{ target_clusters }}"
         impact: low
         urgency: low
       register: new_incident
