@@ -13,8 +13,8 @@
   #   # servicenow_username: ""
   #   # servicenow_password: ""
   #   tower_user_name: "AAP User"
-  #   short_description: "created a new incident from Ansible Automation Platform"
-  #   description: "A new incident was created into service now on"
+    short_description: "created a new incident from Ansible Automation Platform"
+    description: "A new incident was created into service now on"
   tasks:
     - name: Create a ServiceNow ticket
       servicenow.itsm.incident:
@@ -27,6 +27,7 @@
         caller: "{{ tower_user_name }}"
         short_description: "[{{ tower_user_name }}] {{short_description}}"
         description: "{{description}} {{ ansible_date_time.date }}"
+        configuration_item: "{{ target_clusters }}"
         impact: low
         urgency: low
       register: new_incident
