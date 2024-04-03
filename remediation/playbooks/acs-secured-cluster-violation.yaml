@@ -2,7 +2,7 @@
 - name: ACS Policy Violation
   hosts: localhost
  
-  tasks
+  tasks:
     - name: debug
       ansible.builtin.debug:
         var: hostvars[inventory_hostname]
