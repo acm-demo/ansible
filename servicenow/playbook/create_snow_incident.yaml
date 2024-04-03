@@ -49,4 +49,4 @@
         number: "{{ new_incident.record.number }}"
 
     - debug:
-        msg: "Incident {{ new_incident.record.number }} has been updated to in progress on {{ servicenow_instance }}"
+        msg: "Incident {{ new_incident.record.number }} has been updated to in progress"
