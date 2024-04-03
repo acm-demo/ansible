@@ -35,3 +35,16 @@
 #   shell: gcloud container clusters get-credentials {{ cluster_name }} --zone {{ zone }} --project {{ project_id }}
 #   register: gke_kubeconfig
 #   when: cluster_state == "present"
+
+- name: Register the newly-created cluster in Service Now
+  servicenow.itsm.configuration_item:
+    name: "{{ cluster_name }}"
+    asset_tag: "GKE Cluster"
+    category: "cloud infrastructure"
+    environment: "development"
+    short_description: "Google Cloud Kubernetes Cluster"
+    ip_address: "{{ gke_cluster_artifactcluster.endpoint }}"
+    state: "{{ cluster_state }}"
+    sys_class_name: cmdb_ci_server
+
+
