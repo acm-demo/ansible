@@ -8,7 +8,7 @@
     - servicenow.itsm
   
   # Use these var when running locally
-  # vars:
+  vars:
   #   # servicenow_instance: ""
   #   # servicenow_username: ""
   #   # servicenow_password: ""
