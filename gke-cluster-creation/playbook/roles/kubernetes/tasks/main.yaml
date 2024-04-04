@@ -42,7 +42,6 @@
     asset_tag: "GKE Cluster"
     category: "cloud infrastructure"
     environment: "development"
-    location: "{{ zone }}"
     short_description: "Google Cloud Kubernetes Cluster"
     state: "{{ cluster_state }}"
     sys_class_name: cmdb_ci_cluster
