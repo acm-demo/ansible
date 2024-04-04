@@ -42,9 +42,9 @@
     asset_tag: "GKE Cluster"
     category: "cloud infrastructure"
     environment: "development"
+    location: "{{ zone }}"
     short_description: "Google Cloud Kubernetes Cluster"
-    ip_address: "{{ gke_cluster_artifactcluster.endpoint }}"
     state: "{{ cluster_state }}"
-    sys_class_name: cmdb_ci_server
+    sys_class_name: cmdb_ci_cluster
 
 

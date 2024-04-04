@@ -4,3 +4,4 @@ collections:
     version: 3.0.1
   - name: google.cloud
   - name: ansible.controller
+  - name: servicenow.itsm
