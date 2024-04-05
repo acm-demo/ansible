@@ -42,13 +42,20 @@
 
     register: gke_cluster_artifactcluster
 
-  - name: Retrieve kubeconfig
-    ansible.builtin.shell: gcloud auth activate-service-account --key-file=${GCE_CREDENTIALS_FILE_PATH} && gcloud container clusters get-credentials my-cluster --location=northamerica-northeast1-a --project=openenv-z7ckj && kubectl create namespace testing
-    register: gke_kubeconfig
+  - name: Build credentials
+    ansible.builtin.shell: |
+      gcloud auth activate-service-account --key-file=${GCE_CREDENTIALS_FILE_PATH} && \
+      gcloud container clusters get-credentials my-cluster --location=northamerica-northeast1-a --project=openenv-z7ckj && \
+      kubectl create sa ggg && \
+      kubectl create clusterrolebinding ggg-cluster-admin --clusterrole=cluster-admin --serviceaccount=default:ggg
+
+  - name: Get token
+    ansible.builtin.shell: kubectl create token ggg
+    register: gke_token
 
   - name: debug
     ansible.builtin.debug:
-      var: gke_kubeconfig
+      var: gke_token
 
   # - name: debug
   #   ansible.builtin.debug:
