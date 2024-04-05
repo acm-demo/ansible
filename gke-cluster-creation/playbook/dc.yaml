@@ -50,6 +50,11 @@
     ansible.builtin.shell: kubectl create token ggg
     register: gke_token
 
+  - name: Get token
+    ansible.builtin.shell: kubectl config view -o='jsonpath' --template='{.clusters[0].cluster.server}'
+    register: gke_server
+
+
   - name: Apply k8s manifests to Hub Cluster
     redhat.openshift.k8s:
       resource_definition: "{{ lookup('ansible.builtin.template', './templates/import-cluster.yaml') }}"

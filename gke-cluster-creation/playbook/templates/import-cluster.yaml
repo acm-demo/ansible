@@ -54,6 +54,6 @@ metadata:
 stringData:
   autoImportRetry: "2"
   token: "{{ gke_token.stdout }}"
-  server: "https://35.203.117.95"
+  server: "{{ gke_server.stdout }}"
 type: Opaque
 
