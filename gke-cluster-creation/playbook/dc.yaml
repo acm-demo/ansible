@@ -40,7 +40,7 @@
       initial_node_count: "{{ number_of_node }}"
       
       node_config:
-        machine_type: n1-standard-4
+        machine_type: "{{ machine_type }}"
         disk_size_gb: 500
       
       location: "{{ cluster_region }}"
@@ -56,7 +56,7 @@
   - name: Build credentials
     ansible.builtin.shell: |
       gcloud auth activate-service-account --key-file=${GCE_CREDENTIALS_FILE_PATH} && \
-      gcloud container clusters get-credentials {{ cluster_name }} --location=northamerica-northeast1-a --project=openenv-z7ckj && \
+      gcloud container clusters get-credentials {{ cluster_name }} --location={{ cluster_region }} --project=openenv-z7ckj && \
       kubectl create sa ggg && \
       kubectl create clusterrolebinding ggg-cluster-admin --clusterrole=cluster-admin --serviceaccount=default:ggg
 
