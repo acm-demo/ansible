@@ -3,6 +3,9 @@
   hosts: localhost
   gather_facts: false
 
+  vars:
+
+    cluster_name: my-cluster
 
   tasks:  
 
