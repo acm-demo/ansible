@@ -3,14 +3,8 @@
   hosts: localhost
   gather_facts: false
 
-  # roles:
-  #   - role: google.cloud.gcloud
 
   tasks:  
-
-  # - name: Install bottle python package
-  #   ansible.builtin.pip:
-  #     name: pyyaml
 
   - name: create a cluster
     google.cloud.gcp_container_cluster:
@@ -53,14 +47,8 @@
     ansible.builtin.shell: kubectl create token ggg
     register: gke_token
 
-  - name: debug
-    ansible.builtin.debug:
-      var: gke_token
-
-  # - name: debug
-  #   ansible.builtin.debug:
-  #     msg: "{{ lookup('ansible.builtin.env', 'GCE_CREDENTIALS_FILE_PATH') }}"
-
-  - name: debug_gk
-    ansible.builtin.debug:
-      msg: "{{ lookup('ansible.builtin.template', '~/.kube/config') }}"
+    - name: Apply k8s manifests to Hub Cluster
+      redhat.openshift.k8s:
+        resource_definition: "{{ lookup('ansible.builtin.template', './templates/import-cluster.yaml') }}"
+        state: present
+      register: hub_cluster_artifact
