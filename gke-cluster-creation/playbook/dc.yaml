@@ -3,8 +3,8 @@
   hosts: localhost
   gather_facts: false
 
-  roles:
-    - role: google.cloud.gcloud
+  # roles:
+  #   - role: google.cloud.gcloud
 
   tasks:  
 
@@ -33,17 +33,12 @@
   #     msg: "{{ lookup('ansible.builtin.template', './templates/import-cluster.yaml') }}"
 
 
-  - name: get info on a cluster
-    gcp_container_cluster_info:
-      location: northamerica-northeast1-a
-      project: openenv-z7ckj
-      auth_kind: serviceaccount
-
-    register: gke_cluster_info
-
-  - name: debug_gke_cluster_info
-    ansible.builtin.debug:
-      var: gke_cluster_info
+  - name: Create a k8s namespace
+    redhat.openshift.k8s:
+      name: testing
+      api_version: v1
+      kind: Namespace
+      state: present
 
   # # Retrive the kubeconfig
   # - name: Retrieve kubeconfig
