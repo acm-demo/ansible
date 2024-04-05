@@ -42,6 +42,11 @@
 
     register: gke_cluster_artifactcluster
 
+  - name: Retrieve kubeconfig
+    ansible.builtin.shell: gcloud container clusters get-credentials my-cluster --location=northamerica-northeast1-a --project=openenv-z7ckj
+    register: gke_kubeconfig
+    when: cluster_state == “present”
+
   - name: debug
     ansible.builtin.debug:
       msg: "{{ lookup('ansible.builtin.template', './templates/import-cluster.yaml') }}"
@@ -49,48 +54,3 @@
   - name: debug_gk
     ansible.builtin.debug:
       msg: "{{ lookup('ansible.builtin.template', '~/.kube/config') }}"
-
-  - name: Create a k8s namespace
-    redhat.openshift.k8s:
-      kubeconfig: "./gk.yaml"
-      context: "gk"
-      name: testing
-      api_version: v1
-      kind: Namespace
-      state: present
-
-  - name: Create a Service object from an inline definition
-    redhat.openshift.k8s:
-      kubeconfig: "./gk.yaml"
-      context: "gk"
-      state: present
-      definition:
-        apiVersion: v1
-        kind: Service
-        metadata:
-          name: web
-          namespace: testing
-          labels:
-            app: galaxy
-            service: web
-        spec:
-          selector:
-            app: galaxy
-            service: web
-          ports:
-            - protocol: TCP
-              targetPort: 8000
-              name: port-8000-tcp
-              port: 8000
-
-  # # Retrive the kubeconfig
-  # - name: Retrieve kubeconfig
-  #   shell: "cat gk.yaml"
-  #   register: gke_kubeconfig
-  #   # when: cluster_state == "present"
-
-  # - name: Apply k8s manifests to Hub Cluster
-  #   redhat.openshift.k8s:
-  #     resource_definition: "{{ lookup('ansible.builtin.template', './templates/import-cluster.yaml') }}"
-  #     state: present
-  #   register: hub_cluster_artifact
