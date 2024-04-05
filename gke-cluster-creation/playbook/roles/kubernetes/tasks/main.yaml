@@ -8,7 +8,6 @@
     location: "{{ zone }}"
     project: "{{ project_id }}"
     auth_kind: serviceaccount
-    #service_account_file: "{{ credential }}"
     state: "{{ cluster_state }}"
   register: gke_cluster_artifactcluster
 
@@ -29,19 +28,22 @@
     location: "{{ zone }}"
     project: "{{ project_id }}"
     auth_kind: serviceaccount
-    service_account_file: "{{ credential }}"
     state: "{{ cluster_state }}"
 
-# Retrive the kubeconfig
-- name: Retrieve kubeconfig
-  shell: gcloud container clusters get-credentials {{ cluster_name }} --zone {{ zone }} --project {{ project_id }}
-  environment:
-    CLOUDSDK_AUTH_CREDENTIAL_FILE_OVERRIDE: "{{ credential }}"
-  register: gke_kubeconfig
-  when: cluster_state == "present"
+# # Retrive the kubeconfig
+# - name: Retrieve kubeconfig
+#   shell: gcloud container clusters get-credentials {{ cluster_name }} --zone {{ zone }} --project {{ project_id }}
+#   register: gke_kubeconfig
+#   when: cluster_state == "present"
 
-- name: Display kubeconfig output
-  debug:
-    var: gke_kubeconfig
-  when: cluster_state == "present"
+- name: Register the newly-created cluster in Service Now
+  servicenow.itsm.configuration_item:
+    name: "{{ cluster_name }}"
+    asset_tag: "GKE Cluster"
+    category: "cloud infrastructure"
+    environment: "development"
+    short_description: "Google Cloud Kubernetes Cluster"
+    state: "{{ cluster_state }}"
+    sys_class_name: cmdb_ci_cluster
+
 

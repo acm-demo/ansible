@@ -1,0 +1,34 @@
+---
+- name: Open a ServiceNow ticket
+  hosts: localhost
+  connection: local
+  # using this to get the time/date
+  gather_facts: true
+  collections:
+    - servicenow.itsm
+  
+  tasks:
+    - name: Create a ServiceNow ticket
+      servicenow.itsm.incident:
+        state: new
+        caller: "{{ tower_user_name }}"
+        short_description: "[{{ tower_user_name }}]created a new NonCompliant incident from Ansible Automation Plateform."
+        description: "A NonCompliant incident was created. A policy violation was detected by the system. \n Policy name {{ policy_name }}. \n Cluster: {{ target_clusters }} on {{ hub_cluster }} \n on {{ ansible_date_time.date }}"
+        impact: low
+        urgency: low
+      register: new_incident
+
+    - ansible.builtin.set_stats:
+        data:
+          incident_number_cached: "{{ new_incident.record.number }}"
+
+    - debug:
+        msg: "A new incident has been created: {{ new_incident.record.number }}"
+
+    - name: Change the state of the incident {{ new_incident.record.number }} to in progress
+      servicenow.itsm.incident:
+        state: in_progress
+        number: "{{ new_incident.record.number }}"
+
+    - debug:
+        msg: "Incident {{ new_incident.record.number }} has been updated to in progress"
