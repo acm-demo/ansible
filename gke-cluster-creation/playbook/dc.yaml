@@ -45,7 +45,7 @@
   - name: Retrieve kubeconfig
     ansible.builtin.shell: gcloud container clusters get-credentials my-cluster --location=northamerica-northeast1-a --project=openenv-z7ckj
     register: gke_kubeconfig
-    when: cluster_state == “present”
+    
 
   - name: debug
     ansible.builtin.debug:
