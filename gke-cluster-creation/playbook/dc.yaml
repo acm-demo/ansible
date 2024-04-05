@@ -42,15 +42,15 @@
 
     register: gke_cluster_artifactcluster
 
-  - name: Retrieve kubeconfig
-    ansible.builtin.shell: gcloud container clusters get-credentials my-cluster --location=northamerica-northeast1-a --project=openenv-z7ckj
-    register: gke_kubeconfig
+  # - name: Retrieve kubeconfig
+  #   ansible.builtin.shell: gcloud auth login && gcloud container clusters get-credentials my-cluster --location=northamerica-northeast1-a --project=openenv-z7ckj
+  #   register: gke_kubeconfig
     
 
   - name: debug
     ansible.builtin.debug:
-      msg: "{{ lookup('ansible.builtin.template', './templates/import-cluster.yaml') }}"
+      msg: "{{ lookup('ansible.builtin.env', 'GCE_CREDENTIALS_FILE_PATH') }}"
 
   - name: debug_gk
     ansible.builtin.debug:
-      msg: "{{ lookup('ansible.builtin.template', '~/.kube/config') }}"
+      msg: "{{ lookup('ansible.builtin.template', 'GCE_CREDENTIALS_FILE_PATH') }}"
