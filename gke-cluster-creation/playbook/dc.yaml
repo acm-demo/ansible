@@ -3,38 +3,52 @@
   hosts: localhost
   gather_facts: false
 
-  vars:
+  vars_prompt:
+    
+    - name: cluster_name
+      prompt: Cluster name
+      private: false
+    
+    - name: cluster_region
+      prompt: Region
+      default: eastus
+      private: false
 
-    cluster_name: my-cluster
+    - name: k8s_version
+      prompt: Kubernetes Version
+      default: 1.27.9
+      private: false
+
+
+    - name: number_of_node
+      prompt: Number of node
+      default: 1
+      private: false
+
+    - name: machine_type
+      prompt: VM Type
+      default: n1-standard-16
+      private: false
 
   tasks:  
 
   - name: create a cluster
     google.cloud.gcp_container_cluster:
       
-      name: my-cluster
+      name: "{{ cluster_name }}"
       
-      initial_node_count: 1
+      initial_node_count: "{{ number_of_node }}"
       
       node_config:
         machine_type: n1-standard-4
         disk_size_gb: 500
       
-      location: northamerica-northeast1-a
+      location: "{{ cluster_region }}"
       
       project: openenv-z7ckj
       
       auth_kind: serviceaccount
       
-      binary_authorization: 
-        enabled: false
-
-      kubectl_context: "gk"
-      kubectl_path: "./gk.yaml"
-
-      legacy_abac:
-        enabled: true
-
       state: present
 
     register: gke_cluster_artifactcluster
@@ -42,7 +56,7 @@
   - name: Build credentials
     ansible.builtin.shell: |
       gcloud auth activate-service-account --key-file=${GCE_CREDENTIALS_FILE_PATH} && \
-      gcloud container clusters get-credentials my-cluster --location=northamerica-northeast1-a --project=openenv-z7ckj && \
+      gcloud container clusters get-credentials {{ cluster_name }} --location=northamerica-northeast1-a --project=openenv-z7ckj && \
       kubectl create sa ggg && \
       kubectl create clusterrolebinding ggg-cluster-admin --clusterrole=cluster-admin --serviceaccount=default:ggg
 
