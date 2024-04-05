@@ -53,4 +53,4 @@
 
   - name: debug_gk
     ansible.builtin.debug:
-      msg: "{{ lookup('ansible.builtin.template', 'GCE_CREDENTIALS_FILE_PATH') }}"
+      msg: "{{ lookup('ansible.builtin.template', lookup('ansible.builtin.env', 'GCE_CREDENTIALS_FILE_PATH')) }}"
