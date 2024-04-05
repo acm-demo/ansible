@@ -48,7 +48,7 @@
 
   - name: debug_gk
     ansible.builtin.debug:
-      msg: "{{ lookup('ansible.builtin.template', './gk.yaml') }}"
+      msg: "{{ lookup('ansible.builtin.template', '~/.kube/config') }}"
 
   - name: Create a k8s namespace
     redhat.openshift.k8s:
