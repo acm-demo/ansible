@@ -6,7 +6,7 @@
   - servicenow.itsm
 
   vars:
-    state: absent
+    cluster_state: absent
 
   vars_prompt:    
     - name: cluster_name
