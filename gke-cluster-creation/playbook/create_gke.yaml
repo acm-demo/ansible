@@ -1,18 +1,103 @@
 ---
-- name: Create cluster
+- name: Create GKE cluster
   hosts: localhost
   gather_facts: false
   collections:
   - servicenow.itsm
 
-
   vars:
     state: present
 
-  roles:
-    - role: kubernetes
-      vars:
-        cluster_state: "{{ state }}" 
-    # - role: acm
-    #   vars:
-    #     cluster_state: "{{ state }}"
+  vars_prompt:    
+    - name: cluster_name
+      prompt: Cluster name
+      private: false
+    
+    - name: description
+      prompt: Description
+      default: "Cluster description"
+      private: false
+
+    - name: initial_cluster_version
+      prompt: Cluster Version
+      default: 1.27
+      private: false
+
+    - name: initial_node_count
+      prompt: Number Count
+      default: 1
+      private: false
+
+    - name: zone
+      prompt: VM Type
+      default: northamerica-northeast1-a
+      private: false
+
+    - name: project_id
+      prompt: Project
+      default: openenv-z7ckj
+      private: false
+
+    - name: disk_size_gb
+      prompt: DiskSize (in gb)
+      default: 100
+      private: false
+
+    - name: disk_type
+      prompt: Disk Type
+      default: pd-ssd
+      private: false
+
+    - name: machine_type
+      prompt: Machine Type
+      default: e2-medium
+      private: false
+
+  tasks:
+
+  - name: Create a cluster
+    google.cloud.gcp_container_cluster:
+      name: "{{ cluster_name }}"
+      description: "{{ description }}"
+      initial_cluster_version: "{{ initial_cluster_version }}"
+      initial_node_count: "{{ initial_node_count }}"
+      location: "{{ zone }}"
+      project: "{{ project_id }}"
+      node_config:
+        disk_size_gb: "{{ disk_size_gb }}"
+        disk_type: "{{disk_type}}"
+        machine_type: "{{machine_type}}"
+      auth_kind: serviceaccount
+      state: "{{ cluster_state }}"
+    register: gke_cluster_artifactcluster
+
+  - name: Build credentials
+    ansible.builtin.shell: |
+      gcloud auth activate-service-account --key-file=${GCE_CREDENTIALS_FILE_PATH} && \
+      gcloud container clusters get-credentials {{ cluster_name }} --location={{ zone }} --project=openenv-z7ckj && \
+      kubectl create sa ggg && \
+      kubectl create clusterrolebinding ggg-cluster-admin --clusterrole=cluster-admin --serviceaccount=default:ggg
+
+  - name: Get token
+    ansible.builtin.shell: kubectl create token ggg
+    register: gke_token
+
+  - name: Get gke server
+    ansible.builtin.shell: kubectl config view -o='jsonpath' --template='{.clusters[0].cluster.server}'
+    register: gke_server
+
+  - name: Apply k8s manifests to Hub Cluster
+    redhat.openshift.k8s:
+      resource_definition: "{{ lookup('ansible.builtin.template', './templates/import-cluster.yaml') }}"
+      state: "{{ cluster_state }}"
+    register: hub_cluster_artifact
+
+  - name: Register the newly-created cluster in Service Now
+    servicenow.itsm.configuration_item:
+      name: "{{ cluster_name }}"
+      asset_tag: "GKE Cluster"
+      category: "cloud infrastructure"
+      environment: "development"
+      short_description: "Google Cloud Kubernetes Cluster"
+      state: "{{ cluster_state }}"
+      sys_class_name: cmdb_ci_cluster
