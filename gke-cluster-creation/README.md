@@ -32,17 +32,17 @@
 
 2. Build the execution image
 
-    1. Let navigate to the execution-environment folder
+    1. Navigate to the execution-environment folder
     _~/github/org/acm-demo/ansible/gke-cluster-creation/execution-env_
-    1. First will need to define the build version we want to start with in a variable.
-    ```
-    buildVersion=0.1
-    ```
+    1. Define the build version we want to start with in a variable.
+        ```
+        buildVersion=0.1
+        ```
 
     1. Now lets build the image
-    ```
-    ansible-builder build -v 3 -t ansible-ee-gcp:${buildVersion}
-    ```
+        ```
+        ansible-builder build -v 3 -t ansible-ee-gcp:${buildVersion}
+        ```
     1. Let's tag the images, one tag with the version one with latest. ( in this command I use my quay registry, change for your location.)
 
         ```
