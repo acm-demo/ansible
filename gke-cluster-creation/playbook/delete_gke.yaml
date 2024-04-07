@@ -13,6 +13,11 @@
       prompt: Cluster name
       private: false
     
+    - name: zone
+      prompt: Location
+      default: northamerica-northeast1-a
+      private: false
+
   tasks:
 
   - name: Delete cluster from Service Now CI
@@ -42,6 +47,7 @@
   - name: Destroy cluster
     google.cloud.gcp_container_cluster:
       name: "{{ cluster_name }}"
+      location: "{{ zone }}"
       auth_kind: serviceaccount
       state: "{{ cluster_state }}"
     register: gke_cluster_artifactcluster
