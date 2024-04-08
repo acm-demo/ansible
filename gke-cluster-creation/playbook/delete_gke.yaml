@@ -2,8 +2,8 @@
 - name: Delete GKE cluster
   hosts: localhost
   gather_facts: false
-  collections:
-  - servicenow.itsm
+  # collections:
+  # - servicenow.itsm
 
   vars:
     cluster_state: absent
@@ -20,29 +20,29 @@
 
   tasks:
 
-  - name: Delete cluster from Service Now CI
-    servicenow.itsm.configuration_item:
-      name: "{{ cluster_name }}"
-      asset_tag: "GKE Cluster"
-      category: "cloud infrastructure"
-      environment: "development"
-      short_description: "Google Cloud Kubernetes Cluster"
-      state: "{{ cluster_state }}"
-      sys_class_name: cmdb_ci_cluster
+  # - name: Delete cluster from Service Now CI
+  #   servicenow.itsm.configuration_item:
+  #     name: "{{ cluster_name }}"
+  #     asset_tag: "GKE Cluster"
+  #     category: "cloud infrastructure"
+  #     environment: "development"
+  #     short_description: "Google Cloud Kubernetes Cluster"
+  #     state: "{{ cluster_state }}"
+  #     sys_class_name: cmdb_ci_cluster
 
-  - name: Destroy cluster - Delete managedcluster ManagedCluster object on hub cluster
-    redhat.openshift.k8s:
-      name: "{{ cluster_name }}"
-      api_version: cluster.open-cluster-management.io/v1
-      kind: ManagedCluster
-      state: "{{ cluster_state }}"
+  # - name: Destroy cluster - Delete managedcluster ManagedCluster object on hub cluster
+  #   redhat.openshift.k8s:
+  #     name: "{{ cluster_name }}"
+  #     api_version: cluster.open-cluster-management.io/v1
+  #     kind: ManagedCluster
+  #     state: "{{ cluster_state }}"
 
-  - name: Destroy cluster - Delete managedcluster namespace on hub cluster
-    redhat.openshift.k8s:
-      name: "{{ cluster_name }}"
-      api_version: v1
-      kind: Namespace
-      state: "{{ cluster_state }}"
+  # - name: Destroy cluster - Delete managedcluster namespace on hub cluster
+  #   redhat.openshift.k8s:
+  #     name: "{{ cluster_name }}"
+  #     api_version: v1
+  #     kind: Namespace
+  #     state: "{{ cluster_state }}"
 
   - name: Destroy cluster
     google.cloud.gcp_container_cluster:
