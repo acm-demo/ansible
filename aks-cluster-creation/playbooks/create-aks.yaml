@@ -1,0 +1,141 @@
+---
+- name: Create an AKS cluster
+  hosts: localhost
+
+  collections:
+    - community.general
+    - servicenow.itsm
+
+  vars_prompt:
+    
+    - name: cluster_name
+      prompt: Cluster name
+      private: false
+    
+    - name: cluster_region
+      prompt: Region
+      default: eastus
+      private: false
+
+      # centralca
+      # eastus
+      # eastus2
+      # centralus
+      # westus
+      # westus2
+      # westus3
+
+    - name: k8s_version
+      prompt: Kubernetes Version
+      default: 1.27.9
+      private: false
+
+      # 1.26.10
+      # 1.26.12
+      # 1.27.7
+      # 1.27.9
+      # 1.28.3
+      # 1.28.5
+      # 1.29.0
+
+    - name: number_of_node
+      prompt: Number of node
+      default: 1
+      private: false
+
+    - name: vm_type
+      prompt: VM Type
+      default: Standard_B2s
+      private: false
+
+  
+  tasks:
+
+    - name: Create a new resource group
+      azure.azcollection.azure_rm_resourcegroup:
+        name: "desj-aks-{{ cluster_name }}"
+        location: "{{ cluster_region }}"
+        tags:
+          poc: "true"
+      register: new_resource_group
+
+    - name: Create an AKS instance With A System Node Pool & A User Node Pool
+      azure.azcollection.azure_rm_aks:
+        name: "{{ cluster_name }}"
+        resource_group: "{{ new_resource_group.state.name }}"
+        location: "{{ cluster_region }}"
+        dns_prefix: "{{ cluster_name }}"
+        kubernetes_version: "{{ k8s_version }}"
+        enable_rbac: true
+
+        aad_profile:
+           managed: "true"
+           tenant_id: "{{ lookup('ansible.builtin.env', 'AZURE_TENANT') }}"
+           admin_group_object_ids:
+             - "5290e3ab-6a84-4b4c-87db-784549119f2d"
+
+        agent_pool_profiles:
+          - name: default
+            count: "{{ number_of_node }}"
+            vm_size: "{{ vm_type }}"
+            enable_auto_scaling: true                
+            type: VirtualMachineScaleSets
+            mode: System
+            max_count: "{{ number_of_node }}"
+            min_count: 1
+
+      register: aks_cluster_artifact
+
+
+    - name: update admin groups
+      ansible.builtin.shell: |
+          /usr/bin/az account set "{{ lookup('ansible.builtin.env', 'AZURE_SUBSCRIPTION_ID') }}"
+          /usr/bin/az login --service-principal -u "{{ lookup('ansible.builtin.env', 'AZURE_CLIENT_ID') }}" -p "{{ lookup('ansible.builtin.env', 'AZURE_SECRET') }}" --tenant "{{ lookup('ansible.builtin.env', 'AZURE_TENANT') }}"
+          /usr/bin/az aks update -g "{{ new_resource_group.state.name }}" -n "{{ cluster_name }}" --aad-admin-group-object-ids 5290e3ab-6a84-4b4c-87db-784549119f2d
+
+    - name: get Kubeconfig
+      azure.azcollection.azure_rm_aks_info:
+        resource_group: "{{ new_resource_group.state.name }}"
+        name: "{{ cluster_name }}"
+        client_id: "{{ lookup('ansible.builtin.env', 'AZURE_CLIENT_ID') }}"
+        secret: "{{ lookup('ansible.builtin.env', 'AZURE_SECRET') }}"
+        tenant: "{{ lookup('ansible.builtin.env', 'AZURE_TENANT') }}"
+        subscription_id: "{{ lookup('ansible.builtin.env', 'AZURE_SUBSCRIPTION_ID') }}"
+        show_kubeconfig: admin
+      register: aks_info_artifact 
+
+
+    - name: debug aks info
+      ansible.builtin.debug:
+        var: aks_info_artifact
+
+
+    - name: debug aks
+      ansible.builtin.debug:
+        var: aks_cluster_artifact
+
+    - name: Apply k8s manifests to Hub Cluster acm
+      redhat.openshift.k8s:
+        resource_definition: "{{ lookup('ansible.builtin.template', './templates/import-cluster.yaml') }}"
+        state: present
+      register: hub_cluster_artifact
+
+    - name: debug
+      ansible.builtin.debug:
+        var: hub_cluster_artifact
+
+    - name: Apply k8s manifests to Hub Cluster gitops
+      redhat.openshift.k8s:
+        resource_definition: "{{ lookup('ansible.builtin.template', './templates/gitops-secret.yaml') }}"
+        state: present
+      register: hub_cluster_artifact_gitops
+
+    - name: Register the newly-created cluster in Service Now
+      servicenow.itsm.configuration_item:
+        name: "{{ cluster_name }}"
+        asset_tag: "AKS Cluster"
+        category: "cloud infrastructure"
+        environment: "development"
+        short_description: "AKS Cluster"
+        state: present
+        sys_class_name: cmdb_ci_cluster

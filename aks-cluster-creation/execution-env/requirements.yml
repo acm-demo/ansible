@@ -1,0 +1,7 @@
+---
+collections:
+  - name: redhat.openshift
+    version: 3.0.1
+  - name: azure.azcollection
+  - name: ansible.controller
+  - name: servicenow.itsm

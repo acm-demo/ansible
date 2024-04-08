@@ -1,0 +1,52 @@
+---
+- name: Create an AKS cluster
+  hosts: localhost
+
+  collections:
+    - community.general
+    - servicenow.itsm
+
+  vars_prompt:
+    
+    - name: cluster_name
+      prompt: Cluster name
+      private: false
+  
+  tasks:
+
+    - name: Destroy cluster - Delete managedcluster ManagedCluster object on hub cluster
+      redhat.openshift.k8s:
+        name: "{{ cluster_name }}"
+        api_version: cluster.open-cluster-management.io/v1
+        kind: ManagedCluster
+        state: absent
+
+    - name: Destroy cluster - Delete managedcluster namespace on hub cluster
+      redhat.openshift.k8s:
+        name: "{{ cluster_name }}"
+        api_version: v1
+        kind: Namespace
+        state: absent
+
+    - name: Remove the Azure Container Services (AKS) instance
+      azure_rm_aks:
+        name: "{{ cluster_name }}"
+        resource_group: "desj-aks-{{cluster_name}}"
+        state: absent
+
+    - name: Delete the resource group including resources it contains
+      azure_rm_resourcegroup:
+        name: "desj-aks-{{cluster_name}}"
+        force_delete_nonempty: true
+        state: absent
+
+    - name: Register the newly-created cluster in Service Now
+      servicenow.itsm.configuration_item:
+        name: "{{ cluster_name }}"
+        asset_tag: "AKS Cluster"
+        category: "cloud infrastructure"
+        environment: "development"
+        short_description: "AKS Cluster"
+        state: absent
+        sys_class_name: cmdb_ci_cluster
+

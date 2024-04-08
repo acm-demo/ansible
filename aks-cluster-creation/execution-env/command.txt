@@ -1,0 +1,7 @@
+cd execution-env && \
+ansible-builder build -v 3 -t ansible-ee-azure:${BV} && \
+podman tag ansible-ee-azure:${BV} ansible-ee-azure:latest && \
+podman tag ansible-ee-azure:${BV} quay.io/msauve/ansible-ee-azure:${BV} && \
+podman tag ansible-ee-azure:${BV} quay.io/msauve/ansible-ee-azure:latest && \
+podman push quay.io/msauve/ansible-ee-azure:${BV} && \
+podman push quay.io/msauve/ansible-ee-azure:latest
