@@ -7,17 +7,13 @@
 
   vars:
     cluster_state: absent
+    zone: northamerica-northeast1-a
 
   vars_prompt:    
     - name: cluster_name
       prompt: Cluster name
       private: false
     
-    - name: zone
-      prompt: Location
-      default: northamerica-northeast1-a
-      private: false
-
   tasks:
 
   - name: Delete cluster from Service Now CI
