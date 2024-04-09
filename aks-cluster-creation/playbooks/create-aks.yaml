@@ -129,7 +129,7 @@
             az aks get-credentials --resource-group desj-aks-"{{ cluster_name }}" --name "{{ cluster_name}}" --admin
             kubectl create serviceaccount gitops-sa
             kubectl create clusterrolebinding gitops  --clusterrole=cluster-admin --serviceaccount=default:gitops-sa
-            kubectl create token gitops-sa --duration 9999h
+            kubectl create token gitops-sa --duration 9999h > /runner/bearer_token
       register: bearer_token
           
       
