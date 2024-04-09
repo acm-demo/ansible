@@ -124,6 +124,14 @@
       ansible.builtin.debug:
         var: hub_cluster_artifact
 
+    - name: get bearer token
+      ansible.builtin.shell: |
+            kubectl create serviceaccount gitops-sa
+            kubectl create clusterrolebinding gitops  --clusterrole=cluster-admin --serviceaccount=default:gitops-sa
+            kubectl create gitops-sa jenkins --duration 9999h
+      register: bearer_token
+          
+      
     - name: Apply k8s manifests to Hub Cluster gitops
       redhat.openshift.k8s:
         resource_definition: "{{ lookup('ansible.builtin.template', './templates/gitops-secret.yaml') }}"
