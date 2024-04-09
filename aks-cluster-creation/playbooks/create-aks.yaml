@@ -126,6 +126,7 @@
 
     - name: get bearer token
       ansible.builtin.shell: |
+            az aks get-credentials --resource-group desj-aks-"{{ cluster_name }}" --name "{{ cluster_name}}" --admin
             kubectl create serviceaccount gitops-sa
             kubectl create clusterrolebinding gitops  --clusterrole=cluster-admin --serviceaccount=default:gitops-sa
             kubectl create gitops-sa jenkins --duration 9999h
