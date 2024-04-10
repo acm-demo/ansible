@@ -12,10 +12,10 @@
       prompt: Cluster name
       private: false
     
-    - name: cluster_region
-      prompt: Region
-      default: eastus
-      private: false
+    - name: cluster_region                      
+      prompt: Region                            
+      default: eastus                           
+      private: false                            
 
       # centralca
       # eastus
@@ -51,7 +51,7 @@
   
   tasks:
 
-    - name: Create a new resource group
+    - name: Create a new resource group to contain all Azure resources we will create
       azure.azcollection.azure_rm_resourcegroup:
         name: "desj-aks-{{ cluster_name }}"
         location: "{{ cluster_region }}"
@@ -87,13 +87,13 @@
       register: aks_cluster_artifact
 
 
-    - name: update admin groups
+    - name: Update Admin Groups
       ansible.builtin.shell: |
           /usr/bin/az account set "{{ lookup('ansible.builtin.env', 'AZURE_SUBSCRIPTION_ID') }}"
           /usr/bin/az login --service-principal -u "{{ lookup('ansible.builtin.env', 'AZURE_CLIENT_ID') }}" -p "{{ lookup('ansible.builtin.env', 'AZURE_SECRET') }}" --tenant "{{ lookup('ansible.builtin.env', 'AZURE_TENANT') }}"
           /usr/bin/az aks update -g "{{ new_resource_group.state.name }}" -n "{{ cluster_name }}" --aad-admin-group-object-ids 5290e3ab-6a84-4b4c-87db-784549119f2d
 
-    - name: get Kubeconfig
+    - name: Get Kubeconfig to import cluster into ACM
       azure.azcollection.azure_rm_aks_info:
         resource_group: "{{ new_resource_group.state.name }}"
         name: "{{ cluster_name }}"
@@ -104,34 +104,31 @@
         show_kubeconfig: admin
       register: aks_info_artifact 
 
+    # - name: debug aks info
+    #   ansible.builtin.debug:
+    #     var: aks_info_artifact
 
-    - name: debug aks info
-      ansible.builtin.debug:
-        var: aks_info_artifact
+    # - name: debug aks
+    #   ansible.builtin.debug:
+    #     var: aks_cluster_artifact
 
-
-    - name: debug aks
-      ansible.builtin.debug:
-        var: aks_cluster_artifact
-
-    - name: Apply k8s manifests to Hub Cluster acm
+    - name: Apply k8s manifests to Hub Cluster ACM
       redhat.openshift.k8s:
         resource_definition: "{{ lookup('ansible.builtin.template', './templates/import-cluster.yaml') }}"
         state: present
       register: hub_cluster_artifact
 
-    - name: debug
-      ansible.builtin.debug:
-        var: hub_cluster_artifact
+    # - name: debug
+    #   ansible.builtin.debug:
+    #     var: hub_cluster_artifact
 
-    - name: get bearer token
+    - name: Get Bearer Token to configure GitOps
       ansible.builtin.shell: |
             az aks get-credentials --resource-group desj-aks-"{{ cluster_name }}" --name "{{ cluster_name}}" --admin
-            kubectl create serviceaccount gitops-sa
+            kubectl create serviceaccount gitops-sa 
             kubectl create clusterrolebinding gitops  --clusterrole=cluster-admin --serviceaccount=default:gitops-sa
             kubectl create token gitops-sa --duration 9999h > /runner/bearer_token
-      
-          
+            
       
     - name: Apply k8s manifests to Hub Cluster gitops
       redhat.openshift.k8s:

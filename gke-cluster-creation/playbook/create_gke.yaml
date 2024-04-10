@@ -92,6 +92,7 @@
       gcloud container clusters get-credentials {{ cluster_name }} --location={{ zone }} --project=openenv-z7ckj && \
       kubectl create sa ggg && \
       kubectl create clusterrolebinding ggg-cluster-admin --clusterrole=cluster-admin --serviceaccount=default:ggg
+    ignore_errors: true
 
   - name: Get token
     ansible.builtin.shell: kubectl create token ggg --duration 9999h
