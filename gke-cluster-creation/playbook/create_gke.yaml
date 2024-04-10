@@ -25,7 +25,7 @@
 
     - name: initial_node_count
       prompt: Number Count
-      default: 1
+      default: 3
       private: false
 
     - name: zone
