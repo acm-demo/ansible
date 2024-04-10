@@ -94,7 +94,7 @@
       kubectl create clusterrolebinding ggg-cluster-admin --clusterrole=cluster-admin --serviceaccount=default:ggg
 
   - name: Get token
-    ansible.builtin.shell: kubectl create token ggg
+    ansible.builtin.shell: kubectl create token ggg --duration 9999h
     register: gke_token
 
   - name: Get gke server
@@ -106,6 +106,12 @@
       resource_definition: "{{ lookup('ansible.builtin.template', './templates/import-cluster.yaml') }}"
       state: "{{ cluster_state }}"
     register: hub_cluster_artifact
+
+  - name: Apply k8s manifests to Hub Cluster gitops
+    redhat.openshift.k8s:
+      resource_definition: "{{ lookup('ansible.builtin.template', './templates/gitops-secret.yaml') }}"
+      state: present
+    register: hub_cluster_artifact_gitops
 
   - name: Register the newly-created cluster in Service Now
     servicenow.itsm.configuration_item:
