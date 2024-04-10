@@ -90,7 +90,7 @@
     ansible.builtin.shell: |
       gcloud auth activate-service-account --key-file=${GCE_CREDENTIALS_FILE_PATH} && \
       gcloud container clusters get-credentials {{ cluster_name }} --location={{ zone }} --project=openenv-z7ckj && \
-      kubectl create sa ggg && \
+      kubectl create sa ggg 2>/dev/null && \
       kubectl create clusterrolebinding ggg-cluster-admin --clusterrole=cluster-admin --serviceaccount=default:ggg
     ignore_errors: true
 
