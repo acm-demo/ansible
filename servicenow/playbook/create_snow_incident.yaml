@@ -5,7 +5,7 @@
   vars:
     _url_: https://api.openai.com/v1/completions
     gpt_model: "gpt-3.5-turbo-instruct"
-    gpt_prompt: "Please explain this Red Hat ACM event: A policy violation was detected by the system"
+    gpt_prompt: "Please explain this Red Hat event: {{ description }}"
   # using this to get the time/date
   gather_facts: true
   collections:
