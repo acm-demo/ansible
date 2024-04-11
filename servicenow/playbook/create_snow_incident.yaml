@@ -41,7 +41,9 @@
         caller: "{{ tower_user_name }}"
         short_description: "[{{ tower_user_name }}]created a new NonCompliant incident from Ansible Automation Plateform."
         description: |-
-         A NonCompliant incident was created. A policy violation was detected by the system. \n Policy name {{ policy_name }}. \n Cluster: {{ target_clusters }} on {{ hub_cluster }} \n on {{ ansible_date_time.date }}
+         A NonCompliant incident was created. A policy violation was detected by the system.
+         Policy name {{ policy_name }}.
+         Cluster: {{ target_clusters }} on {{ hub_cluster }} on {{ ansible_date_time.date }} 
          AI Enhanced Details: {{ response_text | default("") }}
         impact: low
         urgency: low
