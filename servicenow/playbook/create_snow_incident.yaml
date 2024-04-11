@@ -2,18 +2,47 @@
 - name: Open a ServiceNow ticket
   hosts: localhost
   connection: local
+  vars:
+    _url_: https://api.openai.com/v1/completions
+    gpt_model: "gpt-3.5-turbo-instruct"
+    gpt_prompt: "Please explain this Red Hat ACM event: A policy violation was detected by the system"
   # using this to get the time/date
   gather_facts: true
   collections:
     - servicenow.itsm
   
-  tasks:
+  tasks: 
+
+    - name: Send API request to ChatGPT
+      uri:
+        url: "{{ _url_ }}"
+        method: POST
+        headers: 
+         Content-Type: application/json
+         Authorization: Bearer {{ api_key }}
+        body_format: json
+        body:
+          model: "{{ gpt_model }}"
+          prompt: "{{ gpt_prompt }}"
+          max_tokens: 100  # Adjust the max_tokens as needed
+      register: api_response
+
+    - name: Extract text from API response
+      set_fact:
+        response_text: "{{ api_response.json.choices[0].text }}"
+
+    - name: Display extracted text
+      debug:
+        var: response_text 
+  
     - name: Create a ServiceNow ticket
       servicenow.itsm.incident:
         state: new
         caller: "{{ tower_user_name }}"
         short_description: "[{{ tower_user_name }}]created a new NonCompliant incident from Ansible Automation Plateform."
-        description: "A NonCompliant incident was created. A policy violation was detected by the system. \n Policy name {{ policy_name }}. \n Cluster: {{ target_clusters }} on {{ hub_cluster }} \n on {{ ansible_date_time.date }}"
+        description: |-
+         A NonCompliant incident was created. A policy violation was detected by the system. \n Policy name {{ policy_name }}. \n Cluster: {{ target_clusters }} on {{ hub_cluster }} \n on {{ ansible_date_time.date }}
+         AI Enhanced Details: {{ response_text | default("") }}
         impact: low
         urgency: low
       register: new_incident
