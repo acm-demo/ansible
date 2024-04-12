@@ -22,7 +22,7 @@
 
   tasks:
 
-  - name: Upgrade the Cluster version
+  - name: Upgrade theCluster and node-pool
     ansible.builtin.shell: |
       gcloud auth activate-service-account --key-file=${GCE_CREDENTIALS_FILE_PATH} && \
-      gcloud container clusters upgrade {{ cluster_name }} --master --async --cluster-version {{ version }} --location={{ zone }} --project=openenv-z7ckj --quiet 
+      gcloud container clusters upgrade {{ cluster_name }} --master --async --cluster-version {{ version }} --location={{ zone }} --project=openenv-z7ckj  --node-pool=my-pool-{{ cluster_name }} --quiet 
