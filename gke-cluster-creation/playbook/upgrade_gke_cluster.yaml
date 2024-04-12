@@ -7,6 +7,7 @@
 
   vars:
     cluster_state: present
+    zone: northamerica-northeast1-a
 
   vars_prompt:    
     - name: cluster_name
@@ -18,10 +19,11 @@
       default: 1.27
       private: false
 
+
   tasks:
 
   - name: Upgrade the Cluster version
     ansible.builtin.shell: |
       gcloud auth activate-service-account --key-file=${GCE_CREDENTIALS_FILE_PATH} && \
-      gcloud container clusters upgrade {{ cluster_name }} --master --cluster-version {{ version }}
+      gcloud container clusters upgrade {{ cluster_name }} --master --cluster-version {{ version }} --location={{ zone }} --project=openenv-z7ckj
     ignore_errors: true
