@@ -1,5 +1,5 @@
 ---
-- name: Create GKE cluster
+- name: Upgrade GKE cluster
   hosts: localhost
   gather_facts: false
   collections:
