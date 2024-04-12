@@ -26,4 +26,3 @@
     ansible.builtin.shell: |
       gcloud auth activate-service-account --key-file=${GCE_CREDENTIALS_FILE_PATH} && \
       gcloud container clusters upgrade {{ cluster_name }} --master --cluster-version {{ version }} --location={{ zone }} --project=openenv-z7ckj
-    ignore_errors: true
