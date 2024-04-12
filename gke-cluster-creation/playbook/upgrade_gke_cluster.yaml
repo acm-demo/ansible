@@ -1,0 +1,26 @@
+---
+- name: Create GKE cluster
+  hosts: localhost
+  gather_facts: false
+  collections:
+  - servicenow.itsm
+
+  vars:
+    cluster_state: present
+
+  vars_prompt:    
+    - name: cluster_name
+      prompt: Cluster name
+      private: false
+    
+    - name: version
+      prompt: Cluster Version
+      default: 1.27
+      private: false
+
+  tasks:
+
+  - name: Upgrade the Cluster version
+    ansible.builtin.shell: |
+      gcloud container clusters upgrade {{ cluster_name }} --master --cluster-version {{ version }}
+    ignore_errors: true
