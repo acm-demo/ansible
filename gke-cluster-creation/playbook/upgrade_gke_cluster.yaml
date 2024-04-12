@@ -22,5 +22,6 @@
 
   - name: Upgrade the Cluster version
     ansible.builtin.shell: |
+      gcloud auth activate-service-account --key-file=${GCE_CREDENTIALS_FILE_PATH} && \
       gcloud container clusters upgrade {{ cluster_name }} --master --cluster-version {{ version }}
     ignore_errors: true
