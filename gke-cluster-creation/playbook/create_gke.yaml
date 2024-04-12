@@ -58,8 +58,10 @@
   - name: Create a cluster
     google.cloud.gcp_container_cluster:
       name: "{{ cluster_name }}"
-      description: "{{ description }}"
+      description: "Creation du cluster {{ cluster_name }} par ansible"
       initial_cluster_version: "{{ initial_cluster_version }}"
+      release_channel:
+        channel: "STABLE"
       initial_node_count: "{{ initial_node_count }}"
       location: "{{ zone }}"
       project: "{{ project_id }}"
