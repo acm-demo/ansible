@@ -13,11 +13,6 @@
       prompt: Cluster name
       private: false
     
-    - name: description
-      prompt: Description
-      default: "Cluster description"
-      private: false
-
     - name: initial_cluster_version
       prompt: Cluster Version
       default: 1.27
@@ -58,7 +53,7 @@
   - name: Create a cluster
     google.cloud.gcp_container_cluster:
       name: "{{ cluster_name }}"
-      description: "Creation du cluster {{ cluster_name }} par ansible"
+      description: "Création du cluster {{ cluster_name }} par ansible"
       initial_cluster_version: "{{ initial_cluster_version }}"
       release_channel:
         channel: "STABLE"
