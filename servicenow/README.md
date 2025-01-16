@@ -1,4 +1,13 @@
-# ServiceNow Playbook
+# Service Now, Connection with Ansible.
+
+## Important link on setting up Services Now to AAP.
+  * [ServiceNow to Ansible RestMethod](https://cloudautomation.pharriso.co.uk/post/snow-call-tower/)
+  * [Ansible, ServiceNow Outbound API](https://www.redhat.com/en/blog/ansible-and-servicenow-part-3-making-outbound-restful-api-calls-red-hat-ansible-tower?intcmp=7015Y000003t7aWQAQ)
+  * [Automate ServiceNow with AAP](https://www.redhat.com/en/blog/servicenow-ansible-automation)
+
+
+
+## Documentation for the ServiceNow Playbook
 
 The playbook are use to create or close and Non Compliant Incident on ServiceNow.
 
@@ -10,7 +19,7 @@ The playbook have been develop to use with the Ansible Applicaiton Platform. The
 
 * Use in Ansible Automation PlateForm
     1. Define a new credential type for servicenow.
-![credential type](/servicenow/documentation/img/credentialtype.png)
+![credential type](/documentation/img/credentialtype.png)
     >>>
         Name: servicenow.itsm
 
@@ -43,7 +52,7 @@ The playbook have been develop to use with the Ansible Applicaiton Platform. The
 
 
     2. Create a new credential of type servicenow to connect to the servicenow instance.
-    ![credentials](/servicenow/documentation/img/credential.png)
+    ![credentials](documentation/img/credential.png)
 
     3. Link a project to the source control containing the playbook.
 
